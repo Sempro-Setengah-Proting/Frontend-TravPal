@@ -10,7 +10,7 @@ import SwiftUI
 struct MainTabView: View {
     var body: some View {
         TabView {
-            Text("Halaman 1")
+            HomeView()
                 .tabItem {
                     Label("Home", systemImage: "house")
                 }
@@ -30,6 +30,8 @@ struct MainTabView: View {
                     Label("You", systemImage: "person.fill")
                 }
         }
+        .toolbarBackground(.hidden, for: .tabBar) // pastikan background-nya nyala
+        
     }
 }
 

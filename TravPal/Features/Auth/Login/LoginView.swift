@@ -30,13 +30,13 @@ struct LoginView: View {
                     // MARK: FORM
                     CustomTextField(title: "Email", placeholder: "travpal@gmail.com", text: $emailText)
                     VSpace(.appSpacingV12)
-                    CustomTextField(title: "Password", placeholder: "travpal@gmail.com", text: $passwordText)
+                    CustomSecureField(title: "Password", placeholder: "travpal@gmail.com", text: $passwordText)
                     
                     VSpace(.appSpacingV40)
                     CustomAuthButton(
                         title: "Lanjut",
                         isLoading: isLoading,
-                        isEnabled: !emailText.isEmpty
+                        isEnabled: !emailText.isEmpty && !passwordText.isEmpty,
                     ) {
                         print("Button diklik, email: \(emailText)")
                     }
@@ -68,7 +68,6 @@ struct LoginView: View {
                             print("Google login pressed")
                         }
                         
-                        // Apple Button (menggunakan SF Symbols "apple.logo")
                         SocialLoginButton(
                             title: "Apple",
                             iconName: "apple.logo",
@@ -92,7 +91,7 @@ struct LoginView: View {
                 }
                 .padding(.horizontal)
             }
-            
+            .navigationBarBackButtonHidden(true)
         }
     }
 }

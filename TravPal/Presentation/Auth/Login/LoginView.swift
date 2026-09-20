@@ -12,6 +12,10 @@ struct LoginView: View {
     @State private var passwordText = ""
     @State private var isLoading: Bool = false
     
+    @State private var showToast: Bool = false
+    @State private var toastMessage: String = ""
+    @State private var toastIcon: String = ""
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -65,8 +69,11 @@ struct LoginView: View {
                             iconName: "ic_google",
                             isSystemIcon: false
                         ) {
-                            print("Google login pressed")
-                        }
+                            toastMessage = "Login dengan Google berhasil!"
+                            toastIcon = "checkmark.circle.fill"
+                            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                showToast = true
+                            }                        }
                         
                         SocialLoginButton(
                             title: "Apple",
@@ -93,6 +100,12 @@ struct LoginView: View {
             }
             .navigationBarBackButtonHidden(true)
         }
+        .dynamicIslandToast(
+            isPresented: $showToast,
+            title: toastMessage,
+            systemImage: toastIcon,
+            tintColor: .appSuccess
+        )
     }
 }
 

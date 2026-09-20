@@ -30,7 +30,6 @@ struct MainTabView: View {
                     Label("You", systemImage: "person.fill")
                 }
         }
-        .toolbarBackground(.hidden, for: .tabBar) // pastikan background-nya nyala
         
     }
 }

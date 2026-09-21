@@ -8,7 +8,7 @@
 import Foundation
 
 protocol VerifyOTPUseCaseProtocol {
-    func execute(email: String, otp: String) async throws -> AuthSessionModel
+    func execute(email: String, otp: String) async throws -> String
 }
 
 final class VerifyOTPUseCase: VerifyOTPUseCaseProtocol {
@@ -18,7 +18,7 @@ final class VerifyOTPUseCase: VerifyOTPUseCaseProtocol {
         self.repository = repository
     }
     
-    func execute(email: String, otp: String) async throws -> AuthSessionModel {
+    func execute(email: String, otp: String) async throws -> String {
         let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         return try await repository.verifyOTP(email: trimmedEmail, otp: otp)
     }

@@ -19,3 +19,7 @@ struct VerifyOTPRequestDTO: Encodable {
     let email: String
     let otp: String
 }
+
+struct VerifyOTPResponseDTO: Decodable {
+    let registration_token: String
+}

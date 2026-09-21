@@ -45,5 +45,23 @@ final class AuthAssembly: Assembly {
             MainActor.assumeIsolated {
                 LoginViewModel(loginUseCase: resolver.resolve(LoginUseCaseProtocol.self)!)
             }
-        }    }
+        }
+        
+        container.register(RegisterViewModel.self) { resolver in
+            MainActor.assumeIsolated {
+                RegisterViewModel(generateOTPUseCase: resolver.resolve(GenerateOTPUseCaseProtocol.self)!)
+            }
+        }
+        
+        container.register(VerifyOTPViewModel.self) { (resolver, pendingRegistration: PendingRegistrationModel) in
+            MainActor.assumeIsolated {
+                VerifyOTPViewModel(
+                    pendingRegistration: pendingRegistration,
+                    verifyOTPUseCase: resolver.resolve(VerifyOTPUseCaseProtocol.self)!,
+                    registerUseCase: resolver.resolve(RegisterUseCaseProtocol.self)!,
+                    generateOTPUseCase: resolver.resolve(GenerateOTPUseCaseProtocol.self)!
+                )
+            }
+        }
+    }
 }

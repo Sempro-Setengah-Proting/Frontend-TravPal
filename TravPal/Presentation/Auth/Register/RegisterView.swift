@@ -8,19 +8,21 @@
 import SwiftUI
 
 struct RegisterView: View {
-    
-    @State private var usernameText = ""
-    @State private var emailText = ""
-    @State private var passwordText = ""
-    @State private var isLoading: Bool = false
-    
+    @StateObject private var viewModel: RegisterViewModel
+
+    @State private var showToast: Bool = false
+    @State private var toastMessage: String = ""
+
+    init(viewModel: RegisterViewModel = DIContainer.shared.resolve(RegisterViewModel.self)) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
                 Color.appBackground
                     .ignoresSafeArea()
                 VStack {
-                    // MARK: TITLE AND SUBTITLE
                     Spacer()
                     Text("TravPal")
                         .font(.appBold32)
@@ -29,24 +31,24 @@ struct RegisterView: View {
                         .font(.appRegular14)
                     VSpace(.appSpacingV40)
                     
-                    // MARK: FORM
-                    CustomTextField(title: "Username", placeholder: "hafid open bo", text: $usernameText)
+                    CustomTextField(title: "Username", placeholder: "hafid open bo", text: $viewModel.username)
                     VSpace(.appSpacingV12)
-                    CustomTextField(title: "Email", placeholder: "travpal@gmail.com", text: $emailText)
+                    CustomTextField(title: "Email", placeholder: "travpal@gmail.com", text: $viewModel.email)
                     VSpace(.appSpacingV12)
-                    CustomSecureField(title: "Password", placeholder: "travpal@gmail.com", text: $passwordText)
+                    CustomTextField(title: "Phone Number", placeholder: "0812345678", text: $viewModel.phoneNumber)
+                    VSpace(.appSpacingV12)
+                    CustomSecureField(title: "Password", placeholder: "travpal@gmail.com", text: $viewModel.password)
                     
                     VSpace(.appSpacingV40)
                     CustomAuthButton(
                         title: "Sign Up",
-                        isLoading: isLoading,
-                        isEnabled: !emailText.isEmpty && !passwordText.isEmpty && !usernameText.isEmpty,
+                        isLoading: viewModel.isLoading,
+                        isEnabled: viewModel.isFormValid
                     ) {
-                        print("Button diklik, email: \(emailText)")
+                        Task { await viewModel.requestOTP() }
                     }
                     
                     
-                    // MARK: SOCIAL LOGIN
                     VSpace(.appSpacingV20)
                     HStack {
                         VStack { Divider() }
@@ -72,7 +74,6 @@ struct RegisterView: View {
                             print("Google login pressed")
                         }
                         
-                        // Apple Button (menggunakan SF Symbols "apple.logo")
                         SocialLoginButton(
                             title: "Apple",
                             iconName: "apple.logo",
@@ -97,6 +98,24 @@ struct RegisterView: View {
                 .padding(.horizontal)
             }
             .navigationBarBackButtonHidden(true)
+            .navigationDestination(isPresented: $viewModel.didRequestOTP) {
+                if let pendingRegistration = viewModel.pendingRegistration {
+                    VerifyOTPView(pendingRegistration: pendingRegistration)
+                }
+            }
+        }
+        .dynamicIslandToast(
+            isPresented: $showToast,
+            title: toastMessage,
+            systemImage: "xmark.circle.fill",
+            tintColor: .appDanger
+        )
+        .onChange(of: viewModel.errorMessage) { _, newValue in
+            guard let message = newValue else { return }
+            toastMessage = message
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                showToast = true
+            }
         }
     }
 }
@@ -104,3 +123,4 @@ struct RegisterView: View {
 #Preview {
     RegisterView()
 }
+

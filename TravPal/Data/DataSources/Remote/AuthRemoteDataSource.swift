@@ -12,7 +12,7 @@ protocol AuthRemoteDataSourceProtocol {
     func login(_ request: LoginRequestDTO) async throws -> AuthSessionDTO
     func register(_ request: RegisterRequestDTO) async throws -> RegisterResponseDTO
     func generateOTP(_ request: GenerateOTPRequestDTO) async throws -> GenerateOTPResponseDTO
-    func verifyOTP(_ request: VerifyOTPRequestDTO) async throws -> AuthSessionDTO
+    func verifyOTP(_ request: VerifyOTPRequestDTO) async throws -> VerifyOTPResponseDTO
 }
 
 final class AuthRemoteDataSource: AuthRemoteDataSourceProtocol {
@@ -36,8 +36,8 @@ final class AuthRemoteDataSource: AuthRemoteDataSourceProtocol {
         try await perform(path: "auth/register/otp/request", body: request, decode: GenerateOTPResponseDTO.self)
     }
     
-    func verifyOTP(_ request: VerifyOTPRequestDTO) async throws -> AuthSessionDTO {
-        try await perform(path: "auth/verify", body: request, decode: AuthSessionDTO.self)
+    func verifyOTP(_ request: VerifyOTPRequestDTO) async throws -> VerifyOTPResponseDTO {
+        try await perform(path: "auth/verify", body: request, decode: VerifyOTPResponseDTO.self)
     }
     
     private func perform<Body: Encodable, Response: Decodable>(

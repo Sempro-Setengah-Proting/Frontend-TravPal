@@ -11,7 +11,9 @@ struct RegisterRequestDTO: Encodable {
     let email: String
     let password: String
     let phone_number: String
-    let username: String
+    let device_id: String
+    let name: String
+    let registration_token: String
 }
 
 struct RegisterResponseDTO: Decodable {

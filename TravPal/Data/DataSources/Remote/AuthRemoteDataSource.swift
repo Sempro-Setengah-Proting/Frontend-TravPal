@@ -19,7 +19,6 @@ final class AuthRemoteDataSource: AuthRemoteDataSourceProtocol {
     private let session: Session
     private let baseURL: URL
     
-    
     init(session: Session, baseURL: URL = Constants.apiBaseURL) {
         self.session = session
         self.baseURL = baseURL

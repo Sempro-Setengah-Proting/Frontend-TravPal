@@ -7,11 +7,11 @@
 
 import Foundation
 
-protocol VerifyOTPUsecaseProtocol {
+protocol VerifyOTPUseCaseProtocol {
     func execute(email: String, otp: String) async throws -> AuthSessionModel
 }
 
-final class VerifyOTPUsecase: VerifyOTPUsecaseProtocol {
+final class VerifyOTPUseCase: VerifyOTPUseCaseProtocol {
     private let repository: AuthRepositoryProtocol
     
     init(repository: AuthRepositoryProtocol) {

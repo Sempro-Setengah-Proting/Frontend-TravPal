@@ -8,14 +8,16 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State private var emailText = ""
-    @State private var passwordText = ""
-    @State private var isLoading: Bool = false
-    
+    @StateObject private var viewModel: LoginViewModel
+
     @State private var showToast: Bool = false
     @State private var toastMessage: String = ""
     @State private var toastIcon: String = ""
-    
+
+    init(viewModel: LoginViewModel = DIContainer.shared.resolve(LoginViewModel.self)) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -32,17 +34,17 @@ struct LoginView: View {
                     VSpace(.appSpacingV40)
                     
                     // MARK: FORM
-                    CustomTextField(title: "Email", placeholder: "travpal@gmail.com", text: $emailText)
+                    CustomTextField(title: "Email", placeholder: "travpal@gmail.com", text: $viewModel.email)
                     VSpace(.appSpacingV12)
-                    CustomSecureField(title: "Password", placeholder: "travpal@gmail.com", text: $passwordText)
+                    CustomSecureField(title: "Password", placeholder: "travpal@gmail.com", text: $viewModel.password)
                     
                     VSpace(.appSpacingV40)
                     CustomAuthButton(
                         title: "Lanjut",
-                        isLoading: isLoading,
-                        isEnabled: !emailText.isEmpty && !passwordText.isEmpty,
+                        isLoading: viewModel.isLoading,
+                        isEnabled: viewModel.isFormValid
                     ) {
-                        print("Button diklik, email: \(emailText)")
+                        Task { await viewModel.login() }
                     }
                     
                     
@@ -104,8 +106,21 @@ struct LoginView: View {
             isPresented: $showToast,
             title: toastMessage,
             systemImage: toastIcon,
-            tintColor: .appSuccess
+            tintColor: showToast && toastIcon == "checkmark.circle.fill" ? .appSuccess : .appDanger
         )
+        .onChange(of: viewModel.errorMessage) { _, newValue in
+            guard let message = newValue else { return }
+            toastMessage = message
+            toastIcon = "xmark.circle.fill"
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                showToast = true
+            }
+        }
+        .onChange(of: viewModel.session) { _, newSession in
+            guard newSession != nil else { return }
+            // TODO: ganti root view ke MainTabView lewat coordinator/AppState kamu,
+            // atau simpan accessToken ke Keychain di sini.
+        }
     }
 }
 

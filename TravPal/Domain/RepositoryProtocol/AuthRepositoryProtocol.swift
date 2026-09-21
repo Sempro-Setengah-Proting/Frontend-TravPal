@@ -8,9 +8,9 @@
 protocol AuthRepositoryProtocol {
     func login(email: String, password: String) async throws -> AuthSessionModel
     
-    func Register(email: String, password: String, phone_number: String, username: String)
+    func Register(email: String, password: String, phone_number: String, username: String) async throws
     
-    func generateOTP(email: String)
+    func generateOTP(email: String) async throws
     
     func verifyOTP(email: String, otp: String) async throws -> AuthSessionModel
 }

@@ -16,8 +16,11 @@ final class DIContainer {
     
     private init() {
         container = Container()
-        assembler = Assembler() [
-            Network
-        ]
+        assembler = Assembler(
+            [
+                NetworkAssembly()
+            ],
+            container: container
+        )
     }
 }

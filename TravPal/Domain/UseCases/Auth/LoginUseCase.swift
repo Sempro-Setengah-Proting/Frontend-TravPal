@@ -8,5 +8,5 @@
 import Foundation
 
 protocol LoginUseCaseProtocol {
-    func execute(email: String, password: String) async throws -> AuthSession
+    func execute(email: String, password: String) async throws -> AuthSessionModel
 }

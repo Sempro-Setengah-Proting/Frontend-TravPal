@@ -65,10 +65,12 @@ final class VerifyOTPViewModel: ObservableObject {
     func resendOTP() async {
         isResending = true
         errorMessage = nil
+        successMessage = nil
         defer { isResending = false }
 
         do {
             try await generateOTPUseCase.execute(email: email)
+            successMessage = "Kode OTP baru telah dikirim ke email."
         } catch {
             errorMessage = error.localizedDescription
         }

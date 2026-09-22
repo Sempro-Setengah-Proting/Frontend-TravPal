@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class AuthRepository: AuthRepositoryProtocol {    
+final class AuthRepository: AuthRepositoryProtocol {
     private let remoteDataSource: AuthRemoteDataSourceProtocol
     
     init(remoteDataSource: AuthRemoteDataSourceProtocol) {
@@ -37,12 +37,12 @@ final class AuthRepository: AuthRepositoryProtocol {
         )
     }
     func verifyOTP(email: String, otp: String) async throws -> String {
-            let dto = try await remoteDataSource.verifyOTP(
-                VerifyOTPRequestDTO(
-                    email: email,
-                    otp: otp
-                )
+        let dto = try await remoteDataSource.verifyOTP(
+            VerifyOTPRequestDTO(
+                email: email,
+                otp: otp
             )
+        )
         return dto.registrationToken
     }
     
@@ -54,3 +54,5 @@ final class AuthRepository: AuthRepositoryProtocol {
         )
     }
 }
+
+

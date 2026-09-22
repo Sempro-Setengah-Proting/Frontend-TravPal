@@ -9,14 +9,14 @@ import SwiftUI
 
 struct RegisterView: View {
     @StateObject private var viewModel: RegisterViewModel
-
+    
     @State private var showToast: Bool = false
     @State private var toastMessage: String = ""
-
+    
     init(viewModel: RegisterViewModel = DIContainer.shared.resolve(RegisterViewModel.self)) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -33,11 +33,11 @@ struct RegisterView: View {
                     
                     CustomTextField(title: "Username", placeholder: "hafid open bo", text: $viewModel.username)
                     VSpace(.appSpacingV12)
-                    CustomTextField(title: "Email", placeholder: "travpal@gmail.com", text: $viewModel.email)
+                    CustomTextField(title: "Email", placeholder: "travpal@gmail.com", text: $viewModel.email, isValid: viewModel.isEmailValid, errorMessage: viewModel.emailErrorMessage)
                     VSpace(.appSpacingV12)
-                    CustomTextField(title: "Phone Number", placeholder: "0812345678", text: $viewModel.phoneNumber)
+                    CustomTextField(title: "Phone Number", placeholder: "0812345678", text: $viewModel.phoneNumber, isValid: viewModel.isPhoneNumberValid, errorMessage: viewModel.phoneNumberErrorMessage)
                     VSpace(.appSpacingV12)
-                    CustomSecureField(title: "Password", placeholder: "travpal@gmail.com", text: $viewModel.password)
+                    CustomSecureField(title: "Password", placeholder: "travpal@gmail.com", text: $viewModel.password, isValid: viewModel.isPasswordValid, errorMessage: viewModel.passwordErrorMessage)
                     
                     VSpace(.appSpacingV40)
                     CustomAuthButton(

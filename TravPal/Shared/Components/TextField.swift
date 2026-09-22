@@ -12,11 +12,16 @@ struct CustomTextField: View {
     let title: String
     let placeholder: String
     @Binding var text: String
+    var isValid: Bool = true
+    var errorMessage: String? = nil
     
     @FocusState var isFocused: Bool
+    @State private var shakeAmount: CGFloat = 0
     
     private var activeColor: Color {
-        if isFocused || !text.isEmpty {
+        if !text.isEmpty && !isValid {
+            return Color.appDanger
+        } else if isFocused || !text.isEmpty {
             return Color.appPrimary
         } else {
             return Color.appBorder
@@ -24,10 +29,12 @@ struct CustomTextField: View {
     }
     
     private var lineWidth: CGFloat {
-        if isFocused || !text.isEmpty {
-            return 1.0
-        } else {
+        if isFocused {
+            return 2.0
+        } else if !text.isEmpty {
             return 1.5
+        } else {
+            return 1.0
         }
     }
     
@@ -40,6 +47,10 @@ struct CustomTextField: View {
             TextField(placeholder, text: $text)
                 .focused($isFocused)
                 .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 30)
+                        .fill(Color.appPrimary.opacity(isFocused ? 0.06 : 0))
+                )
                 .overlay(
                     RoundedRectangle(cornerRadius: 30)
                         .stroke(activeColor, lineWidth: lineWidth)
@@ -47,7 +58,28 @@ struct CustomTextField: View {
                 .keyboardType(.default)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled(true)
+                .scaleEffect(isFocused ? 1.015 : 1.0)
+                .modifier(ShakeEffect(animatableData: shakeAmount))
             
+            if let errorMessage {
+                Text(errorMessage)
+                    .font(.caption2)
+                    .foregroundStyle(Color.appDanger)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .top).combined(with: .opacity),
+                        removal: .opacity
+                    ))
+            }
+        }
+        .animation(.spring(response: 0.35, dampingFraction: 0.65), value: isFocused)
+        .animation(.easeInOut(duration: 0.2), value: activeColor)
+        .animation(.spring(response: 0.35, dampingFraction: 0.75), value: errorMessage)
+        .onChange(of: errorMessage) { oldValue, newValue in
+            guard oldValue == nil, newValue != nil else { return }
+            withAnimation(.linear(duration: 0.45)) {
+                shakeAmount += 1
+            }
         }
     }
 }
@@ -59,12 +91,17 @@ struct CustomSecureField: View {
     let title: String
     let placeholder: String
     @Binding var text: String
+    var isValid: Bool = true
+    var errorMessage: String? = nil
     
     @FocusState private var isFocused: Bool
     @State private var isSecured: Bool = true
+    @State private var shakeAmount: CGFloat = 0
     
     private var activeColor: Color {
-        if isFocused || !text.isEmpty {
+        if !text.isEmpty && !isValid {
+            return Color.appDanger
+        } else if isFocused || !text.isEmpty {
             return Color.appPrimary
         } else {
             return Color.appBorder
@@ -72,10 +109,12 @@ struct CustomSecureField: View {
     }
     
     private var lineWidth: CGFloat {
-        if isFocused || !text.isEmpty {
-            return 1.0
-        } else {
+        if isFocused {
+            return 2.0
+        } else if !text.isEmpty {
             return 1.5
+        } else {
+            return 1.0
         }
     }
     
@@ -97,23 +136,52 @@ struct CustomSecureField: View {
                     }
                 }
                 
-                Button(action: {
-                    isSecured.toggle()
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isSecured.toggle()
+                    }
                     isFocused = true
-                }) {
+                } label: {
                     Image(systemName: isSecured ? "eye.slash" : "eye")
                         .foregroundColor(activeColor)
                         .accentColor(.clear)
+                        .contentTransition(.symbolEffect(.replace))
                 }
             }
             .frame(height: 20)
             .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 30)
+                    .fill(Color.appPrimary.opacity(isFocused ? 0.06 : 0))
+            )
             .overlay(
                 RoundedRectangle(cornerRadius: 30)
                     .stroke(activeColor, lineWidth: lineWidth)
             )
             .textInputAutocapitalization(.never)
             .autocorrectionDisabled(true)
+            .scaleEffect(isFocused ? 1.015 : 1.0)
+            .modifier(ShakeEffect(animatableData: shakeAmount))
+            
+            if let errorMessage {
+                Text(errorMessage)
+                    .font(.caption2)
+                    .foregroundStyle(Color.appDanger)
+                    .padding(.horizontal, 4)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .top).combined(with: .opacity),
+                        removal: .opacity
+                    ))
+            }
+        }
+        .animation(.spring(response: 0.35, dampingFraction: 0.65), value: isFocused)
+        .animation(.easeInOut(duration: 0.2), value: activeColor)
+        .animation(.spring(response: 0.35, dampingFraction: 0.75), value: errorMessage)
+        .onChange(of: errorMessage) { oldValue, newValue in
+            guard oldValue == nil, newValue != nil else { return }
+            withAnimation(.linear(duration: 0.45)) {
+                shakeAmount += 1
+            }
         }
     }
 }

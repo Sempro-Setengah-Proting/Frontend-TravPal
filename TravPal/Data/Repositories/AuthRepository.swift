@@ -24,7 +24,7 @@ final class AuthRepository: AuthRepositoryProtocol {
         return dto.toDomain()
     }
     
-    func Register(email: String, password: String, phoneNumber: String, name: String, deviceId: String, registrationToken: String) async throws {
+    func register(email: String, password: String, phoneNumber: String, name: String, deviceId: String, registrationToken: String) async throws {
         _ = try await remoteDataSource.register(
             RegisterRequestDTO(
                 email: email,
@@ -43,8 +43,8 @@ final class AuthRepository: AuthRepositoryProtocol {
                     otp: otp
                 )
             )
-            return dto.registration_token
-        }
+        return dto.registrationToken
+    }
     
     func generateOTP(email: String) async throws {
         _ = try await remoteDataSource.generateOTP(

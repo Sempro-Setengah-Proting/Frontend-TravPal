@@ -21,7 +21,7 @@ final class RegisterUseCase: RegisterUseCaseProtocol {
     func execute(email: String, password: String, phoneNumber: String, name: String, deviceId: String, registrationToken: String) async throws {
         let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        try await repository.Register(
+        try await repository.register(
             email: trimmedEmail,
             password: password,
             phoneNumber: phoneNumber,

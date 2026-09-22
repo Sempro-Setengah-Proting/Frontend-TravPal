@@ -11,6 +11,7 @@ enum NetworkError: LocalizedError {
     case server(message: String)
     case underlying(Error)
     case invalidResponse
+    case decodingMismatch(underlying: Error)
 
     var errorDescription: String? {
         switch self {
@@ -20,6 +21,8 @@ enum NetworkError: LocalizedError {
             return error.localizedDescription
         case .invalidResponse:
             return "Terjadi kesalahan, coba lagi ya."
+        case .decodingMismatch:
+            return "Terjadi kesalahan pada aplikasi, coba lagi nanti ya."
         }
     }
 }

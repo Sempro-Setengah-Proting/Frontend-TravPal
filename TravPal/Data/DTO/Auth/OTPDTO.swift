@@ -12,6 +12,7 @@ struct GenerateOTPRequestDTO: Encodable {
 }
 
 struct GenerateOTPResponseDTO: Decodable {
+    let status: String?
     let message: String?
 }
 
@@ -21,5 +22,11 @@ struct VerifyOTPRequestDTO: Encodable {
 }
 
 struct VerifyOTPResponseDTO: Decodable {
-    let registration_token: String
+    let registrationToken: String
+    let expiresIn: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case registrationToken = "registration_token"
+        case expiresIn = "expires_in"
+    }
 }

@@ -7,9 +7,12 @@
 
 import Foundation
 
-struct APIResponse<T: Decodable>: Decodable {
+struct APIEnvelope<T: Decodable>: Decodable {
+    let status: String
     let message: String?
-    let data: T
+    let data: T?
+
+    var isSuccess: Bool { status == "success" }
 }
 
 struct APIErrorResponse: Decodable {

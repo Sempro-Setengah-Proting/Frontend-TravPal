@@ -11,7 +11,7 @@ import Alamofire
 protocol AuthRemoteDataSourceProtocol {
     func login(_ request: LoginRequestDTO) async throws -> AuthSessionDTO
     func register(_ request: RegisterRequestDTO) async throws -> RegisterResponseDTO
-    func generateOTP(_ request: GenerateOTPRequestDTO) async throws -> GenerateOTPResponseDTO
+    func generateOTP(_ request: GenerateOTPRequestDTO) async throws -> Void
     func verifyOTP(_ request: VerifyOTPRequestDTO) async throws -> VerifyOTPResponseDTO
 }
 
@@ -32,19 +32,48 @@ final class AuthRemoteDataSource: AuthRemoteDataSourceProtocol {
         try await perform(path: "auth/sign-up", body: request, decode: RegisterResponseDTO.self)
     }
     
-    func generateOTP(_ request: GenerateOTPRequestDTO) async throws -> GenerateOTPResponseDTO {
-        try await perform(path: "auth/register/otp/request", body: request, decode: GenerateOTPResponseDTO.self)
+    func generateOTP(_ request: GenerateOTPRequestDTO) async throws -> Void {
+        try await performWithoutPayload(path: "auth/register/otp/request", body: request)
     }
     
     func verifyOTP(_ request: VerifyOTPRequestDTO) async throws -> VerifyOTPResponseDTO {
-        try await perform(path: "auth/verify", body: request, decode: VerifyOTPResponseDTO.self)
+        try await perform(path: "auth/register/otp/verify", body: request, decode: VerifyOTPResponseDTO.self)
     }
+    
+    // MARK: Helpers
     
     private func perform<Body: Encodable, Response: Decodable>(
         path: String,
         body: Body,
         decode: Response.Type
     ) async throws -> Response {
+        let envelope = try await requestEnvelope(path: path, body: body, decode: Response.self)
+        
+        guard envelope.isSuccess else {
+            throw NetworkError.server(message: envelope.message ?? "Terjadi kesalahan, coba lagi ya.")
+        }
+        guard let data = envelope.data else {
+            throw NetworkError.decodingMismatch(underlying: NetworkError.invalidResponse)
+        }
+        return data
+    }
+    
+    private func performWithoutPayload<Body: Encodable>(
+        path: String,
+        body: Body
+    ) async throws {
+        let envelope = try await requestEnvelope(path: path, body: body, decode: EmptyPayload.self)
+        
+        guard envelope.isSuccess else {
+            throw NetworkError.server(message: envelope.message ?? "Terjadi kesalahan, coba lagi ya.")
+        }
+    }
+    
+    private func requestEnvelope<Body: Encodable, Response: Decodable>(
+        path: String,
+        body: Body,
+        decode: Response.Type
+    ) async throws -> APIEnvelope<Response> {
         let url = baseURL.appendingPathComponent(path)
         
         return try await withCheckedThrowingContinuation { continuation in
@@ -54,11 +83,10 @@ final class AuthRemoteDataSource: AuthRemoteDataSourceProtocol {
                 parameters: body,
                 encoder: JSONParameterEncoder.default
             )
-            .validate()
-            .responseDecodable(of: APIResponse<Response>.self) { response in
+            .responseDecodable(of: APIEnvelope<Response>.self) { response in
                 switch response.result {
-                case .success(let apiResponse):
-                    continuation.resume(returning: apiResponse.data)
+                case .success(let envelope):
+                    continuation.resume(returning: envelope)
                     
                 case .failure(let error):
                     if let data = response.data,
@@ -72,3 +100,5 @@ final class AuthRemoteDataSource: AuthRemoteDataSourceProtocol {
         }
     }
 }
+
+private struct EmptyPayload: Decodable {}

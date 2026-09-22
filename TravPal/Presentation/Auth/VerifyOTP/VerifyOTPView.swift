@@ -10,10 +10,10 @@ import SwiftUI
 
 struct VerifyOTPView: View {
     @StateObject private var viewModel: VerifyOTPViewModel
-
+    
     @State private var showToast: Bool = false
     @State private var toastMessage: String = ""
-
+    
     init(pendingRegistration: PendingRegistrationModel) {
         _viewModel = StateObject(
             wrappedValue: DIContainer.shared.resolve(
@@ -22,7 +22,7 @@ struct VerifyOTPView: View {
             )
         )
     }
-
+    
     var body: some View {
         ZStack {
             Color.appBackground
@@ -32,13 +32,15 @@ struct VerifyOTPView: View {
                 Text("Verify your email")
                     .font(.appBold32)
                 VSpace(.appSpacingV8)
-                Text("We sent a code to \(viewModel.email)")
+                Text("Enter 6 digit code that you’ll receive on your email")
+                Text("\(viewModel.email)")
                     .font(.appRegular14)
                 VSpace(.appSpacingV40)
-
-                CustomTextField(title: "OTP Code", placeholder: "123456", text: $viewModel.otp)
-                    .keyboardType(.numberPad)
-
+                
+                OTPField(code: $viewModel.otp, length: 6) { _ in
+                    Task { await viewModel.verify() }
+                }
+                
                 VSpace(.appSpacingV40)
                 CustomAuthButton(
                     title: "Verify",
@@ -47,7 +49,7 @@ struct VerifyOTPView: View {
                 ) {
                     Task { await viewModel.verify() }
                 }
-
+                
                 VSpace(.appSpacingV20)
                 Button {
                     Task { await viewModel.resendOTP() }
@@ -57,7 +59,7 @@ struct VerifyOTPView: View {
                         .foregroundColor(.appPrimary)
                 }
                 .disabled(viewModel.isResending)
-
+                
                 Spacer()
             }
             .padding(.horizontal)

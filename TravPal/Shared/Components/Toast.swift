@@ -7,6 +7,30 @@
 
 import SwiftUI
 
+struct ToastState: Equatable {
+    enum Style {
+        case success
+        case error
+    }
+
+    let style: Style
+    let message: String
+
+    var systemImage: String {
+        switch style {
+        case .success: return "checkmark.circle.fill"
+        case .error: return "xmark.circle.fill"
+        }
+    }
+
+    var tintColor: Color {
+        switch style {
+        case .success: return .appSuccess
+        case .error: return .appDanger
+        }
+    }
+}
+
 struct DynamicIslandToastModifier: ViewModifier {
     @Binding var isPresented: Bool
     let title: String

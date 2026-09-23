@@ -12,7 +12,7 @@ struct VerifyOTPView: View {
     @StateObject private var viewModel: VerifyOTPViewModel
     
     @State private var showToast: Bool = false
-    @State private var toastMessage: String = ""
+    @State private var activeToast: ToastState?
     
     init(pendingRegistration: PendingRegistrationModel) {
         _viewModel = StateObject(
@@ -70,13 +70,13 @@ struct VerifyOTPView: View {
         }
         .dynamicIslandToast(
             isPresented: $showToast,
-            title: toastMessage,
-            systemImage: "xmark.circle.fill",
-            tintColor: .appDanger
+            title: activeToast?.message ?? "",
+            systemImage: activeToast?.systemImage ?? "xmark.circle.fill",
+            tintColor: activeToast?.tintColor ?? .appDanger
         )
-        .onChange(of: viewModel.errorMessage) { _, newValue in
-            guard let message = newValue else { return }
-            toastMessage = message
+        .onChange(of: viewModel.toast) { _, newValue in
+            guard let toast = newValue else { return }
+            activeToast = toast
             withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                 showToast = true
             }

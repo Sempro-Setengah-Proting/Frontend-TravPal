@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B636B7C33063AD86007F5A4E /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = B636B7C23063AD86007F5A4E /* GoogleSignIn */; };
+		B636B7C53063AD86007F5A4E /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B636B7C43063AD86007F5A4E /* GoogleSignInSwift */; };
 		B643A75A30600EF900DC9D41 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = B643A75930600EF900DC9D41 /* Swinject */; };
 		B643A75D30600F0600DC9D41 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B643A75C30600F0600DC9D41 /* Alamofire */; };
 		B6A7CFAC30625D8D009DC168 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = B6A7CFAB30625D89009DC168 /* .gitignore */; };
@@ -79,6 +81,8 @@
 			files = (
 				B643A75A30600EF900DC9D41 /* Swinject in Frameworks */,
 				B643A75D30600F0600DC9D41 /* Alamofire in Frameworks */,
+				B636B7C33063AD86007F5A4E /* GoogleSignIn in Frameworks */,
+				B636B7C53063AD86007F5A4E /* GoogleSignInSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,6 +148,8 @@
 			packageProductDependencies = (
 				B643A75930600EF900DC9D41 /* Swinject */,
 				B643A75C30600F0600DC9D41 /* Alamofire */,
+				B636B7C23063AD86007F5A4E /* GoogleSignIn */,
+				B636B7C43063AD86007F5A4E /* GoogleSignInSwift */,
 			);
 			productName = TravPal;
 			productReference = B6E3115C303C04CD00480AE8 /* TravPal.app */;
@@ -230,6 +236,7 @@
 			packageReferences = (
 				B643A75830600EF900DC9D41 /* XCRemoteSwiftPackageReference "Swinject" */,
 				B643A75B30600F0600DC9D41 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				B636B7C13063AD86007F5A4E /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B6E3115D303C04CD00480AE8 /* Products */;
@@ -629,6 +636,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B636B7C13063AD86007F5A4E /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
+		};
 		B643A75830600EF900DC9D41 /* XCRemoteSwiftPackageReference "Swinject" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Swinject/Swinject.git";
@@ -648,6 +663,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B636B7C23063AD86007F5A4E /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B636B7C13063AD86007F5A4E /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		B636B7C43063AD86007F5A4E /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B636B7C13063AD86007F5A4E /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
 		B643A75930600EF900DC9D41 /* Swinject */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B643A75830600EF900DC9D41 /* XCRemoteSwiftPackageReference "Swinject" */;

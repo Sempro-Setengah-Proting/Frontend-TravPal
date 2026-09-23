@@ -28,6 +28,10 @@ final class AuthAssembly: Assembly {
             LoginUseCase(repository: resolver.resolve(AuthRepositoryProtocol.self)!)
         }
         
+        container.register(LoginWithGoogleUseCaseProtocol.self) { resolver in
+            LoginWithGoogleUseCase(repository: resolver.resolve(AuthRepositoryProtocol.self)!)
+        }
+        
         container.register(RegisterUseCaseProtocol.self) { resolver in
             RegisterUseCase(repository: resolver.resolve(AuthRepositoryProtocol.self)!)
         }
@@ -43,7 +47,10 @@ final class AuthAssembly: Assembly {
         // MARK: ViewModels
         container.register(LoginViewModel.self) { resolver in
             MainActor.assumeIsolated {
-                LoginViewModel(loginUseCase: resolver.resolve(LoginUseCaseProtocol.self)!)
+                LoginViewModel(
+                    loginUseCase: resolver.resolve(LoginUseCaseProtocol.self)!,
+                    loginWithGoogleUseCase: resolver.resolve(LoginWithGoogleUseCaseProtocol.self)!
+                )
             }
         }
         

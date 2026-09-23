@@ -13,6 +13,7 @@ protocol AuthRemoteDataSourceProtocol {
     func register(_ request: RegisterRequestDTO) async throws -> RegisterResponseDTO
     func generateOTP(_ request: GenerateOTPRequestDTO) async throws -> Void
     func verifyOTP(_ request: VerifyOTPRequestDTO) async throws -> VerifyOTPResponseDTO
+    func loginWithGoogle(_ request: GoogleLoginRequestDTO) async throws -> AuthSessionDTO
 }
 
 final class AuthRemoteDataSource: AuthRemoteDataSourceProtocol {
@@ -38,6 +39,10 @@ final class AuthRemoteDataSource: AuthRemoteDataSourceProtocol {
     
     func verifyOTP(_ request: VerifyOTPRequestDTO) async throws -> VerifyOTPResponseDTO {
         try await perform(path: "auth/register/otp/verify", body: request, decode: VerifyOTPResponseDTO.self)
+    }
+    
+    func loginWithGoogle(_ request: GoogleLoginRequestDTO) async throws -> AuthSessionDTO {
+        try await perform(path: "oauth/sign-in-google", body: request, decode: AuthSessionDTO.self)
     }
     
     // MARK: Helpers
@@ -84,6 +89,12 @@ final class AuthRemoteDataSource: AuthRemoteDataSourceProtocol {
                 encoder: JSONParameterEncoder.default
             )
             .responseDecodable(of: APIEnvelope<Response>.self) { response in
+                // DEBUG
+                print("[\(path)] status: \(response.response?.statusCode ?? -1)")
+                if let data = response.data, let body = String(data: data, encoding: .utf8) {
+                    print("[\(path)] body: \(body)")
+                }
+                
                 switch response.result {
                 case .success(let envelope):
                     continuation.resume(returning: envelope)

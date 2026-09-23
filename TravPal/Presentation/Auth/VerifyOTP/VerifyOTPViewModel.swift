@@ -13,7 +13,7 @@ final class VerifyOTPViewModel: ObservableObject {
     @Published var otp = ""
     @Published private(set) var isLoading = false
     @Published private(set) var isResending = false
-    @Published var errorMessage: String?
+    @Published var toast: ToastState?
     @Published var didCompleteRegistration = false
 
     let email: String
@@ -43,7 +43,6 @@ final class VerifyOTPViewModel: ObservableObject {
     func verify() async {
         guard isOTPValid else { return }
         isLoading = true
-        errorMessage = nil
         defer { isLoading = false }
 
         do {
@@ -58,19 +57,19 @@ final class VerifyOTPViewModel: ObservableObject {
             )
             didCompleteRegistration = true
         } catch {
-            errorMessage = error.localizedDescription
+            toast = ToastState(style: .error, message: error.localizedDescription)
         }
     }
 
     func resendOTP() async {
         isResending = true
-        errorMessage = nil
         defer { isResending = false }
 
         do {
             try await generateOTPUseCase.execute(email: email)
+            toast = ToastState(style: .success, message: "Kode OTP baru telah dikirim ke \(email)")
         } catch {
-            errorMessage = error.localizedDescription
+            toast = ToastState(style: .error, message: error.localizedDescription)
         }
     }
 }

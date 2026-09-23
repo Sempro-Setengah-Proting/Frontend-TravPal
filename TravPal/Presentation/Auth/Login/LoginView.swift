@@ -13,6 +13,7 @@ struct LoginView: View {
     @State private var showToast: Bool = false
     @State private var toastMessage: String = ""
     @State private var toastIcon: String = ""
+    @State private var navigateToHome: Bool = false
 
     init(viewModel: LoginViewModel = DIContainer.shared.resolve(LoginViewModel.self)) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -69,13 +70,11 @@ struct LoginView: View {
                         SocialLoginButton(
                             title: "Google",
                             iconName: "ic_google",
-                            isSystemIcon: false
+                            isSystemIcon: false,
+                            isLoading: viewModel.isGoogleLoading
                         ) {
-                            toastMessage = "Login dengan Google berhasil!"
-                            toastIcon = "checkmark.circle.fill"
-                            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                showToast = true
-                            }                        }
+                            Task { await viewModel.loginWithGoogle() }
+                        }
                         
                         SocialLoginButton(
                             title: "Apple",
@@ -118,8 +117,11 @@ struct LoginView: View {
         }
         .onChange(of: viewModel.session) { _, newSession in
             guard newSession != nil else { return }
-            // TODO: ganti root view ke MainTabView lewat coordinator/AppState kamu,
-            // atau simpan accessToken ke Keychain di sini.
+            navigateToHome = true
+        }
+        .navigationDestination(isPresented: $navigateToHome) {
+            MainTabView()
+                .navigationBarBackButtonHidden(true)
         }
     }
 }

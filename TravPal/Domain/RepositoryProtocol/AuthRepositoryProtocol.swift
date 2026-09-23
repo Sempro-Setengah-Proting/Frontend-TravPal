@@ -13,4 +13,6 @@ protocol AuthRepositoryProtocol {
     func generateOTP(email: String) async throws
     
     func verifyOTP(email: String, otp: String) async throws -> String
+    
+    func loginWithGoogle(idToken: String, deviceID: String) async throws -> AuthSessionModel
 }

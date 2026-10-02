@@ -18,6 +18,7 @@ final class LoginViewModel: ObservableObject {
     @Published private(set) var isGoogleLoading = false
     @Published var errorMessage: String?
     @Published private(set) var session: AuthSessionModel?
+    @Published private(set) var googleSession: GoogleAuthSessionModel?
 
     private let loginUseCase: LoginUseCaseProtocol
     private let loginWithGoogleUseCase: LoginWithGoogleUseCaseProtocol
@@ -59,7 +60,7 @@ final class LoginViewModel: ObservableObject {
 
         do {
             let idToken = try await signInWithGoogleSDK(presenting: presentingVC)
-            session = try await loginWithGoogleUseCase.execute(
+            googleSession = try await loginWithGoogleUseCase.execute(
                 idToken: idToken,
                 deviceId: DeviceIdentifier.current
             )

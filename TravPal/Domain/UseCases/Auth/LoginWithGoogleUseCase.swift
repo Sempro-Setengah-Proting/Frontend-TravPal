@@ -6,7 +6,7 @@
 //
 
 protocol LoginWithGoogleUseCaseProtocol {
-    func execute(idToken: String, deviceId: String) async throws -> AuthSessionModel
+    func execute(idToken: String, deviceId: String) async throws -> GoogleAuthSessionModel
 }
 
 final class LoginWithGoogleUseCase: LoginWithGoogleUseCaseProtocol {
@@ -16,7 +16,7 @@ final class LoginWithGoogleUseCase: LoginWithGoogleUseCaseProtocol {
         self.repository = repository
     }
     
-    func execute(idToken: String, deviceId: String) async throws -> AuthSessionModel {
+    func execute(idToken: String, deviceId: String) async throws -> GoogleAuthSessionModel {
         return try await repository.loginWithGoogle(idToken: idToken, deviceID: deviceId)
     }
 }

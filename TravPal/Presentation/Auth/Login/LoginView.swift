@@ -112,6 +112,18 @@ struct LoginView: View {
                 .padding(.horizontal)
             }
             .navigationBarBackButtonHidden(true)
+            .onChange(of: viewModel.session) { _, newSession in
+                guard newSession != nil else { return }
+                navigateToHome = true
+            }
+            .onChange(of: viewModel.googleSession) { _, newSession in
+                guard newSession != nil else { return }
+                navigateToHome = true
+            }
+            .navigationDestination(isPresented: $navigateToHome) {
+                MainTabView()
+                    .navigationBarBackButtonHidden(true)
+            }
         }
         .dynamicIslandToast(
             isPresented: $showToast,
@@ -126,14 +138,6 @@ struct LoginView: View {
             withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                 showToast = true
             }
-        }
-        .onChange(of: viewModel.session) { _, newSession in
-            guard newSession != nil else { return }
-            navigateToHome = true
-        }
-        .navigationDestination(isPresented: $navigateToHome) {
-            MainTabView()
-                .navigationBarBackButtonHidden(true)
         }
     }
 }

@@ -62,7 +62,7 @@ final class AuthRepository: AuthRepositoryProtocol {
         }
     }
     
-    func loginWithGoogle(idToken: String, deviceID: String) async throws -> AuthSessionModel {
+    func loginWithGoogle(idToken: String, deviceID: String) async throws -> GoogleAuthSessionModel {
         try await mapped {
             let dto = try await remoteDataSource.loginWithGoogle(
                 GoogleLoginRequestDTO(

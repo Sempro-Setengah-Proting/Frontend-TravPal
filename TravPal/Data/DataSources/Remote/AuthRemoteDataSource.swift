@@ -13,7 +13,7 @@ protocol AuthRemoteDataSourceProtocol {
     func register(_ request: RegisterRequestDTO) async throws -> RegisterResponseDTO
     func generateOTP(_ request: GenerateOTPRequestDTO) async throws -> Void
     func verifyOTP(_ request: VerifyOTPRequestDTO) async throws -> VerifyOTPResponseDTO
-    func loginWithGoogle(_ request: GoogleLoginRequestDTO) async throws -> AuthSessionDTO
+    func loginWithGoogle(_ request: GoogleLoginRequestDTO) async throws -> GoogleAuthSessionDTO
 }
 
 final class AuthRemoteDataSource: AuthRemoteDataSourceProtocol {
@@ -41,8 +41,8 @@ final class AuthRemoteDataSource: AuthRemoteDataSourceProtocol {
         try await perform(path: "auth/register/otp/verify", body: request, decode: VerifyOTPResponseDTO.self)
     }
     
-    func loginWithGoogle(_ request: GoogleLoginRequestDTO) async throws -> AuthSessionDTO {
-        try await perform(path: "oauth/sign-in-google", body: request, decode: AuthSessionDTO.self)
+    func loginWithGoogle(_ request: GoogleLoginRequestDTO) async throws -> GoogleAuthSessionDTO {
+        try await perform(path: "oauth/sign-in-google", body: request, decode: GoogleAuthSessionDTO.self)
     }
     
     // MARK: Helpers

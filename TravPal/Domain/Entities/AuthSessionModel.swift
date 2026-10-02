@@ -11,3 +11,4 @@ struct AuthSessionModel: Equatable {
     let user: UserModel
     let accessToken: String
 }
+

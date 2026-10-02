@@ -30,17 +30,19 @@ struct RegisterView: View {
                         .frame(width: 100, height: 50)
                     Text("TravPal")
                         .font(.appBold32)
+                        .foregroundStyle(Color.appTextPrimary)
                     Text("Create your account")
                         .font(.appRegular14)
+                        .foregroundStyle(Color.appTextPrimary)
                     VSpace(.appSpacingV40)
                     
-                    CustomTextField(title: "Username", placeholder: "hafid open bo", text: $viewModel.username)
+                    CustomTextField(title: "Username", placeholder: "travpal", text: $viewModel.username)
                     VSpace(.appSpacingV12)
                     CustomTextField(title: "Email", placeholder: "travpal@gmail.com", text: $viewModel.email, isValid: viewModel.isEmailValid, errorMessage: viewModel.emailErrorMessage)
                     VSpace(.appSpacingV12)
                     CustomTextField(title: "Phone Number", placeholder: "0812345678", text: $viewModel.phoneNumber, isValid: viewModel.isPhoneNumberValid, errorMessage: viewModel.phoneNumberErrorMessage)
                     VSpace(.appSpacingV12)
-                    CustomSecureField(title: "Password", placeholder: "travpal@gmail.com", text: $viewModel.password, isValid: viewModel.isPasswordValid, errorMessage: viewModel.passwordErrorMessage)
+                    CustomSecureField(title: "Password", placeholder: "********", text: $viewModel.password, isValid: viewModel.isPasswordValid, errorMessage: viewModel.passwordErrorMessage)
                     
                     VSpace(.appSpacingV40)
                     CustomAuthButton(

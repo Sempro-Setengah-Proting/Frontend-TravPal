@@ -27,21 +27,33 @@ struct LoginView: View {
                 VStack {
                     // MARK: TITLE AND SUBTITLE
                     Spacer()
+                    Image("ic_travpal")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 50)
                     Text("TravPal")
                         .font(.appBold32)
+                        .foregroundStyle(Color.appTextPrimary)
                     VSpace(.appSpacingV8)
                     Text("Welcome back pal, please log in")
                         .font(.appRegular14)
+                        .foregroundStyle(Color.appTextPrimary)
                     VSpace(.appSpacingV40)
                     
                     // MARK: FORM
                     CustomTextField(title: "Email", placeholder: "travpal@gmail.com", text: $viewModel.email)
                     VSpace(.appSpacingV12)
-                    CustomSecureField(title: "Password", placeholder: "travpal@gmail.com", text: $viewModel.password)
+                    CustomSecureField(title: "Password", placeholder: "********", text: $viewModel.password)
                     
-                    VSpace(.appSpacingV40)
+                    VSpace(.appSpacingV12)
+                    Text("Forgot Password?")
+                        .font(.appRegular14)
+                        .foregroundStyle(Color.appTextPrimary)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                    
+                    VSpace(.appSpacingV32)
                     CustomAuthButton(
-                        title: "Lanjut",
+                        title: "Log in",
                         isLoading: viewModel.isLoading,
                         isEnabled: viewModel.isFormValid
                     ) {

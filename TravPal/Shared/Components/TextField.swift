@@ -28,6 +28,14 @@ struct CustomTextField: View {
         }
     }
     
+    private var textColor: Color {
+        if !text.isEmpty && !isValid {
+            return Color.appDanger
+        } else {
+            return Color.appTextPrimary
+        }
+    }
+    
     private var lineWidth: CGFloat {
         if isFocused {
             return 2.0
@@ -44,8 +52,9 @@ struct CustomTextField: View {
                 .font(.caption)
                 .foregroundStyle(activeColor)
             
-            TextField(placeholder, text: $text)
+            TextField("", text: $text, prompt: Text(placeholder).foregroundStyle(Color.appBorder))
                 .focused($isFocused)
+                .foregroundStyle(textColor)
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 30)
@@ -108,6 +117,14 @@ struct CustomSecureField: View {
         }
     }
     
+    private var textColor: Color {
+        if !text.isEmpty && !isValid {
+            return Color.appDanger
+        } else {
+            return Color.appTextPrimary
+        }
+    }
+    
     private var lineWidth: CGFloat {
         if isFocused {
             return 2.0
@@ -127,12 +144,13 @@ struct CustomSecureField: View {
             HStack {
                 ZStack(alignment: .leading) {
                     if isSecured {
-                        SecureField(placeholder, text: $text)
-                            .focused($isFocused)
-                            .foregroundStyle(Color.appPrimary)
+                        SecureField("",text: $text,prompt: Text(placeholder).foregroundStyle(Color.appBorder))
+                        .focused($isFocused)
+                        .foregroundStyle(textColor)
                     } else {
                         TextField(placeholder, text: $text)
                             .focused($isFocused)
+                            .foregroundStyle(textColor)
                     }
                 }
                 

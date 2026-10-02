@@ -18,7 +18,7 @@ final class LoginViewModel: ObservableObject {
     @Published private(set) var isGoogleLoading = false
     @Published var errorMessage: String?
     @Published private(set) var session: AuthSessionModel?
-    @Published private(set) var googleSession: GoogleAuthSessionModel?
+    @Published private(set) var googleSession: AuthSessionModel?
 
     private let loginUseCase: LoginUseCaseProtocol
     private let loginWithGoogleUseCase: LoginWithGoogleUseCaseProtocol
@@ -42,7 +42,7 @@ final class LoginViewModel: ObservableObject {
         defer { isLoading = false }
 
         do {
-            session = try await loginUseCase.execute(email: email, password: password)
+            session = try await loginUseCase.execute(email: email, password: password, deviceId: DeviceIdentifier.current)
         } catch {
             errorMessage = error.localizedDescription
         }

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol LoginUseCaseProtocol {
-    func execute(email: String, password: String) async throws -> AuthSessionModel
+    func execute(email: String, password: String, deviceId: String) async throws -> AuthSessionModel
 }
 
 final class LoginUseCase: LoginUseCaseProtocol {
@@ -18,8 +18,8 @@ final class LoginUseCase: LoginUseCaseProtocol {
         self.repository = repository
     }
     
-    func execute(email: String, password: String) async throws -> AuthSessionModel {
+    func execute(email: String, password: String, deviceId: String) async throws -> AuthSessionModel {
         let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        return try await repository.login(email: trimmedEmail, password: password)
+        return try await repository.login(email: trimmedEmail, password: password, deviceId: deviceId)
     }
 }

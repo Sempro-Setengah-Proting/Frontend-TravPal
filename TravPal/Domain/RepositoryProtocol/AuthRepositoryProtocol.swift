@@ -6,7 +6,7 @@
 //
 
 protocol AuthRepositoryProtocol {
-    func login(email: String, password: String) async throws -> AuthSessionModel
+    func login(email: String, password: String, deviceId: String) async throws -> AuthSessionModel
     
     func register(email: String, password: String, phoneNumber: String, name: String, deviceId: String, registrationToken: String) async throws
     
@@ -14,5 +14,5 @@ protocol AuthRepositoryProtocol {
     
     func verifyOTP(email: String, otp: String) async throws -> String
     
-    func loginWithGoogle(idToken: String, deviceID: String) async throws -> GoogleAuthSessionModel
+    func loginWithGoogle(idToken: String, deviceID: String) async throws -> AuthSessionModel
 }

@@ -8,15 +8,24 @@
 import Foundation
 
 struct AuthSessionDTO: Decodable {
-    let user: UserDTO
     let accessToken: String
-    
+    let refreshToken: String
+    let tokenType: String
+    let expiresIn: Int
+
     enum CodingKeys: String, CodingKey {
-        case user
-        case accessToken = "access_token"
+        case accessToken  = "access_token"
+        case refreshToken = "refresh_token"
+        case tokenType    = "token_type"
+        case expiresIn    = "expires_in"
     }
-    
+
     func toDomain() -> AuthSessionModel {
-        AuthSessionModel(user: user.toDomain(), accessToken: accessToken)
+        return AuthSessionModel(
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            tokenType: tokenType,
+            expiresIn: expiresIn
+        )
     }
 }

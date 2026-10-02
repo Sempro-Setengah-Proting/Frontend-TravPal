@@ -14,12 +14,13 @@ final class AuthRepository: AuthRepositoryProtocol {
         self.remoteDataSource = remoteDataSource
     }
     
-    func login(email: String, password: String) async throws -> AuthSessionModel {
+    func login(email: String, password: String, deviceId: String) async throws -> AuthSessionModel {
         try await mapped {
             let dto = try await remoteDataSource.login(
                 LoginRequestDTO(
                     email: email,
-                    password: password
+                    password: password,
+                    device_id: deviceId,
                 )
             )
             return dto.toDomain()
@@ -62,7 +63,7 @@ final class AuthRepository: AuthRepositoryProtocol {
         }
     }
     
-    func loginWithGoogle(idToken: String, deviceID: String) async throws -> GoogleAuthSessionModel {
+    func loginWithGoogle(idToken: String, deviceID: String) async throws -> AuthSessionModel {
         try await mapped {
             let dto = try await remoteDataSource.loginWithGoogle(
                 GoogleLoginRequestDTO(

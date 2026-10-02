@@ -12,6 +12,7 @@ struct RegisterView: View {
     
     @State private var showToast: Bool = false
     @State private var toastMessage: String = ""
+    @State private var navigateToHome: Bool = false
     
     init(viewModel: RegisterViewModel = DIContainer.shared.resolve(RegisterViewModel.self)) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -74,9 +75,10 @@ struct RegisterView: View {
                         SocialLoginButton(
                             title: "Google",
                             iconName: "ic_google",
-                            isSystemIcon: false
+                            isSystemIcon: false,
+                            isLoading: viewModel.isGoogleLoading
                         ) {
-                            print("Google login pressed")
+                            Task { await viewModel.loginWithGoogle() }
                         }
                         
                         SocialLoginButton(
@@ -107,6 +109,14 @@ struct RegisterView: View {
                 if let pendingRegistration = viewModel.pendingRegistration {
                     VerifyOTPView(pendingRegistration: pendingRegistration)
                 }
+            }
+            .onChange(of: viewModel.googleSession) { _, newSession in
+                guard newSession != nil else { return }
+                navigateToHome = true
+            }
+            .navigationDestination(isPresented: $navigateToHome) {
+                MainTabView()
+                    .navigationBarBackButtonHidden(true)
             }
         }
         .dynamicIslandToast(

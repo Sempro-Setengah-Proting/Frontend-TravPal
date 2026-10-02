@@ -7,6 +7,8 @@
 
 import Foundation
 import Combine
+import UIKit
+import GoogleSignIn
 
 @MainActor
 final class RegisterViewModel: ObservableObject {
@@ -15,15 +17,22 @@ final class RegisterViewModel: ObservableObject {
     @Published var password = ""
     @Published var phoneNumber = ""
     @Published private(set) var isLoading = false
+    @Published private(set) var isGoogleLoading = false
     @Published var errorMessage: String?
+    @Published private(set) var googleSession: AuthSessionModel?
     
     @Published private(set) var pendingRegistration: PendingRegistrationModel?
     @Published var didRequestOTP = false
     
     private let generateOTPUseCase: GenerateOTPUseCaseProtocol
+    private let loginWithGoogleUseCase: LoginWithGoogleUseCaseProtocol
     
-    init(generateOTPUseCase: GenerateOTPUseCaseProtocol) {
+    init(
+        generateOTPUseCase: GenerateOTPUseCaseProtocol,
+        loginWithGoogleUseCase: LoginWithGoogleUseCaseProtocol
+    ) {
         self.generateOTPUseCase = generateOTPUseCase
+        self.loginWithGoogleUseCase = loginWithGoogleUseCase
     }
     
     var isFormValid: Bool {
@@ -72,6 +81,49 @@ final class RegisterViewModel: ObservableObject {
             didRequestOTP = true
         } catch {
             errorMessage = error.localizedDescription
+        }
+    }
+    
+    func loginWithGoogle() async {
+        guard let presentingVC = UIApplication.shared.rootViewController else {
+            errorMessage = "Terjadi kesalahan, coba lagi ya."
+            return
+        }
+
+        isGoogleLoading = true
+        errorMessage = nil
+        defer { isGoogleLoading = false }
+
+        do {
+            let idToken = try await signInWithGoogleSDK(presenting: presentingVC)
+            googleSession = try await loginWithGoogleUseCase.execute(
+                idToken: idToken,
+                deviceId: DeviceIdentifier.current
+            )
+        } catch is CancellationError {
+            // User nutup sheet Google sign-in sendiri, gak perlu toast error.
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func signInWithGoogleSDK(presenting viewController: UIViewController) async throws -> String {
+        try await withCheckedThrowingContinuation { continuation in
+            GIDSignIn.sharedInstance.signIn(withPresenting: viewController) { result, error in
+                if let error {
+                    if (error as NSError).code == -5 {
+                        continuation.resume(throwing: CancellationError())
+                    } else {
+                        continuation.resume(throwing: error)
+                    }
+                    return
+                }
+                guard let idToken = result?.user.idToken?.tokenString else {
+                    continuation.resume(throwing: NetworkError.invalidResponse)
+                    return
+                }
+                continuation.resume(returning: idToken)
+            }
         }
     }
 }

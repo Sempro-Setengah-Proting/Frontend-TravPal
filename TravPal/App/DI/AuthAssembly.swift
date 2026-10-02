@@ -56,7 +56,10 @@ final class AuthAssembly: Assembly {
         
         container.register(RegisterViewModel.self) { resolver in
             MainActor.assumeIsolated {
-                RegisterViewModel(generateOTPUseCase: resolver.resolve(GenerateOTPUseCaseProtocol.self)!)
+                RegisterViewModel(
+                    generateOTPUseCase: resolver.resolve(GenerateOTPUseCaseProtocol.self)!,
+                    loginWithGoogleUseCase: resolver.resolve(LoginWithGoogleUseCaseProtocol.self)!
+                )
             }
         }
         

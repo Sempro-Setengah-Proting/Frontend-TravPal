@@ -28,16 +28,13 @@ struct EditFieldSheet<Field: View>: View {
                     field
                     Spacer()
                 }
-                .padding(.horizontal)
+                .padding(.appSpacingH20)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text(title)
-                        .font(.appSemiBold22)
-                        .foregroundStyle(Color.appPrimary)
                 }
-
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
                 }

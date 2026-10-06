@@ -40,7 +40,7 @@ struct EditNameView: View {
                 text: $viewModel.name
             )
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.height(750)])
     }
 }
  

@@ -42,7 +42,7 @@ struct EditEmailView: View {
                 errorMessage: viewModel.emailErrorMessage,
             )
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.height(750)])
     }
 }
 

@@ -42,7 +42,7 @@ struct EditPhoneView: View {
                 errorMessage: viewModel.phoneNumberErrorMessage,
             )
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.height(750)])
     }
 }
 

@@ -9,16 +9,16 @@ import SwiftUI
 
 struct LoginView: View {
     @StateObject private var viewModel: LoginViewModel
-
+    @EnvironmentObject private var appState: AppState
+    
     @State private var showToast: Bool = false
     @State private var toastMessage: String = ""
     @State private var toastIcon: String = ""
-    @State private var navigateToHome: Bool = false
-
+    
     init(viewModel: LoginViewModel = DIContainer.shared.resolve(LoginViewModel.self)) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -114,15 +114,11 @@ struct LoginView: View {
             .navigationBarBackButtonHidden(true)
             .onChange(of: viewModel.session) { _, newSession in
                 guard newSession != nil else { return }
-                navigateToHome = true
+                appState.didLogin()
             }
             .onChange(of: viewModel.googleSession) { _, newSession in
                 guard newSession != nil else { return }
-                navigateToHome = true
-            }
-            .navigationDestination(isPresented: $navigateToHome) {
-                MainTabView()
-                    .navigationBarBackButtonHidden(true)
+                appState.didLogin()
             }
         }
         .dynamicIslandToast(

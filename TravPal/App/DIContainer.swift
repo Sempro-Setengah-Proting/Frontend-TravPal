@@ -19,7 +19,8 @@ final class DIContainer {
         assembler = Assembler(
             [
                 NetworkAssembly(),
-                AuthAssembly()
+                AuthAssembly(),
+                ProfileAssembly()
             ],
             container: container
         )

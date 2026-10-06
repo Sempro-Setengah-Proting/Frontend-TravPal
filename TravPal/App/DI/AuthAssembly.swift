@@ -12,8 +12,8 @@ import Alamofire
 final class AuthAssembly: Assembly {
     func assemble(container: Container) {
         // MARK: Data Source
-        container.register(AuthRemoteDataSourceProtocol.self) {
-            resolver in AuthRemoteDataSource(session: resolver.resolve(Session.self)!)
+        container.register(AuthRemoteDataSourceProtocol.self) { resolver in
+            AuthRemoteDataSource(client: resolver.resolve(APIClientProtocol.self)!)
         }
         .inObjectScope(.container)
         

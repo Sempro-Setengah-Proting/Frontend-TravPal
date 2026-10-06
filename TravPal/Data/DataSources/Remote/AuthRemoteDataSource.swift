@@ -17,98 +17,30 @@ protocol AuthRemoteDataSourceProtocol {
 }
 
 final class AuthRemoteDataSource: AuthRemoteDataSourceProtocol {
-    private let session: Session
-    private let baseURL: URL
+    private let client: APIClientProtocol
     
-    init(session: Session, baseURL: URL = Constants.apiBaseURL) {
-        self.session = session
-        self.baseURL = baseURL
+    init(client: APIClientProtocol) {
+        self.client = client
     }
     
     func login(_ request: LoginRequestDTO) async throws -> AuthSessionDTO {
-        try await perform(path: "auth/sign-in", body: request, decode: AuthSessionDTO.self)
+        try await client.perform(path: "auth/sign-in", body: request, decode: AuthSessionDTO.self)
     }
     
     func register(_ request: RegisterRequestDTO) async throws -> RegisterResponseDTO {
-        try await perform(path: "auth/sign-up", body: request, decode: RegisterResponseDTO.self)
+        try await client.perform(path: "auth/sign-up", body: request, decode: RegisterResponseDTO.self)
     }
     
     func generateOTP(_ request: GenerateOTPRequestDTO) async throws -> Void {
-        try await performWithoutPayload(path: "auth/register/otp/request", body: request)
+        try await client.performWithoutPayload(path: "auth/register/otp/request", body: request)
     }
     
     func verifyOTP(_ request: VerifyOTPRequestDTO) async throws -> VerifyOTPResponseDTO {
-        try await perform(path: "auth/register/otp/verify", body: request, decode: VerifyOTPResponseDTO.self)
+        try await client.perform(path: "auth/register/otp/verify", body: request, decode: VerifyOTPResponseDTO.self)
     }
     
     func loginWithGoogle(_ request: GoogleLoginRequestDTO) async throws -> AuthSessionDTO {
-        try await perform(path: "oauth/sign-in-google", body: request, decode: AuthSessionDTO.self)
-    }
-    
-    // MARK: Helpers
-    
-    private func perform<Body: Encodable, Response: Decodable>(
-        path: String,
-        body: Body,
-        decode: Response.Type
-    ) async throws -> Response {
-        let envelope = try await requestEnvelope(path: path, body: body, decode: Response.self)
-        
-        guard envelope.isSuccess else {
-            throw NetworkError.server(message: envelope.message ?? "Terjadi kesalahan, coba lagi ya.")
-        }
-        guard let data = envelope.data else {
-            throw NetworkError.decodingMismatch(underlying: NetworkError.invalidResponse)
-        }
-        return data
-    }
-    
-    private func performWithoutPayload<Body: Encodable>(
-        path: String,
-        body: Body
-    ) async throws {
-        let envelope = try await requestEnvelope(path: path, body: body, decode: EmptyPayload.self)
-        
-        guard envelope.isSuccess else {
-            throw NetworkError.server(message: envelope.message ?? "Terjadi kesalahan, coba lagi ya.")
-        }
-    }
-    
-    private func requestEnvelope<Body: Encodable, Response: Decodable>(
-        path: String,
-        body: Body,
-        decode: Response.Type
-    ) async throws -> APIEnvelope<Response> {
-        let url = baseURL.appendingPathComponent(path)
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            session.request(
-                url,
-                method: .post,
-                parameters: body,
-                encoder: JSONParameterEncoder.default
-            )
-            .responseDecodable(of: APIEnvelope<Response>.self) { response in
-                // DEBUG
-                print("[\(path)] status: \(response.response?.statusCode ?? -1)")
-                if let data = response.data, let body = String(data: data, encoding: .utf8) {
-                    print("[\(path)] body: \(body)")
-                }
-                
-                switch response.result {
-                case .success(let envelope):
-                    continuation.resume(returning: envelope)
-                    
-                case .failure(let error):
-                    if let data = response.data,
-                       let apiError = try? JSONDecoder().decode(APIErrorResponse.self, from: data) {
-                        continuation.resume(throwing: NetworkError.server(message: apiError.message))
-                    } else {
-                        continuation.resume(throwing: NetworkError.underlying(error))
-                    }
-                }
-            }
-        }
+        try await client.perform(path: "oauth/sign-in-google", body: request, decode: AuthSessionDTO.self)
     }
 }
 

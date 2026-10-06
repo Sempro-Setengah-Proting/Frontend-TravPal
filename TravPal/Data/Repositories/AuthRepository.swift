@@ -75,8 +75,6 @@ final class AuthRepository: AuthRepositoryProtocol {
         }
     }
     
-    // MARK: Error mapping
-    
     private func mapped<T>(_ operation: () async throws -> T) async throws -> T {
         do {
             return try await operation()

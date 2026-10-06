@@ -12,8 +12,11 @@ import Alamofire
 //  Registrasi Alamofire Session sebagai singleton, dipakai semua RemoteDataSource.
 final class NetworkAssembly: Assembly {
     func assemble(container: Container) {
-        container.register(Session.self) { _ in
-            Session.default
+        container.register(Session.self) { _ in Session.default }
+            .inObjectScope(.container)
+
+        container.register(APIClientProtocol.self) { r in
+            APIClient(session: r.resolve(Session.self)!)
         }
         .inObjectScope(.container)
     }

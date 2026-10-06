@@ -8,53 +8,68 @@
 import SwiftUI
 
 struct MainProfileView: View {
-    @State private var showSheet = false
+    @State private var goToEdit = false
     
     var body: some View {
         NavigationStack {
             VStack {
-                Button("Buka Modal") {
-                    showSheet = true
+                VSpace(.appSpacingV20)
+                ZStack {
+                    Circle()
+                        .stroke(Color.appPrimary, lineWidth: 2)
+                        .frame(width: 150, height: 150)
+                    
+                    Image("profile")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 150, height: 150)
+                        .clipShape(Circle())
                 }
-                .sheet(isPresented: $showSheet) {
-                    NavigationStack {
-                        VStack {
-                            Text("Ini isi modal")
-                        }
-                        .navigationTitle("Phone Number")
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
-                                Button("Cancel") {
-                                    showSheet = false
-                                }
-                            }
-                            .sharedBackgroundVisibility(.hidden)
-                            ToolbarItem(placement: .topBarTrailing) {
-                                Button("Save") {
-                                    showSheet = true
-                                }
-                                .foregroundStyle(Color.appPrimary)
-                                // .buttonStyle(.plain)
-                            }
-                            // kalau pakai .plain gabisa text doang, karena di dalam ToolbarItem, jdi harus pakai 👇 dawg
-                            .sharedBackgroundVisibility(.hidden)
-                        }
-                    }
-                    .presentationDetents([.height(750)])
+                VSpace(.appSpacingV20)
+                Text("Revan Arturito")
+                VSpace(.appSpacingV20)
+                ProfileMenuCard {
+                    VSpace(.appSpacingV8)
+                    ProfileMenuRow(icon: "heart", title: "Favorite place") { }
+                    VSpace(.appSpacingV8)
+                    ProfileMenuRow(icon: "clock.arrow.circlepath", title: "History trip") { }
+                    VSpace(.appSpacingV8)
+                    ProfileMenuRow(icon: "key", title: "Change password") { }
+                    VSpace(.appSpacingV8)
                 }
+                VSpace(.appSpacingV20)
+                ProfileMenuCard {
+                    ProfileMenuRow(
+                        icon: "rectangle.portrait.and.arrow.right",
+                        title: "Logout",
+                        tint: .appDanger,
+                        showChevron: false
+                    ) { }
+                }
+                Spacer()
             }
-            .navigationTitle("Profile")
-            .navigationBarTitleDisplayMode(.inline)
+            .padding(.horizontal)
+            .background(LinearGradient.appBackground.ignoresSafeArea())
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .principal) {
+                    Text("Profile")
+                        .font(.appSemiBold22)
+                        .foregroundStyle(Color.appPrimary)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        // balik wok
+                        goToEdit = true
                     } label: {
-                        Image(systemName: "chevron.left")
+                        Image(systemName: "square.and.pencil")
+                            .foregroundStyle(Color.appPrimary)
                     }
                 }
                 .sharedBackgroundVisibility(.hidden)
+                
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(isPresented: $goToEdit) {
+                EditProfileView()
             }
         }
     }

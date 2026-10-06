@@ -32,3 +32,14 @@ extension Color {
         )
     }
 }
+
+extension LinearGradient {
+    static let appBackground = LinearGradient(
+        colors: [
+            Color(red: 0.94, green: 0.96, blue: 0.97), // atas
+            Color(red: 0.83, green: 0.93, blue: 0.94)  // bawah
+        ],
+        startPoint: .top,
+        endPoint: .bottom
+    )
+}

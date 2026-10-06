@@ -25,7 +25,7 @@ struct MainTabView: View {
                         icon: { Image(_internalSystemName: "location.bottomleft.forward.to.point.topright.scurvepath") }
                     )
                 }
-            Text("Halaman 4")
+            MainProfileView()
                 .tabItem {
                     Label("You", systemImage: "person.fill")
                 }

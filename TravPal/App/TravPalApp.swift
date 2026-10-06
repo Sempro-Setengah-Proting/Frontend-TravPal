@@ -28,9 +28,16 @@ struct TravPalApp: App {
             serverClientID: serverClientId
         )
     }
+
+    @State private var isLoggedIn = false
+
     var body: some Scene {
         WindowGroup {
-            LoginView()
+            if isLoggedIn {
+                MainTabView()
+            } else {
+                LoginView(onLoggedIn: { isLoggedIn = true })
+            }
         }
     }
 }

@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct EditProfileView: View {
-    @State private var showSheet = false
+    @StateObject private var viewModel: EditProfileViewModel
     @Environment(\.dismiss) private var dismiss
+    
+    init(profile: UserProfileModel) {
+        _viewModel = StateObject(
+            wrappedValue: DIContainer.shared.resolve(EditProfileViewModel.self, argument: profile)
+        )
+    }
     // ini biar ga tampil navbar
     
     var body: some View {
@@ -32,12 +38,16 @@ struct EditProfileView: View {
             ProfileMenuCard {
                 VSpace(.appSpacingV8)
                 ProfileMenuRow(icon: "", title: "Name", showTrailingIcon: false) {
-                    showSheet = true
+                    viewModel.activeSheet = .name
                 }
                 VSpace(.appSpacingV8)
-                ProfileMenuRow(icon: "", title: "Email", showTrailingIcon: false) { }
+                ProfileMenuRow(icon: "", title: "Email", showTrailingIcon: false) {
+                    viewModel.activeSheet = .email
+                }
                 VSpace(.appSpacingV8)
-                ProfileMenuRow(icon: "", title: "Phone Number", showTrailingIcon: false) { }
+                ProfileMenuRow(icon: "", title: "Phone Number", showTrailingIcon: false) {
+                    viewModel.activeSheet = .phone
+                }
                 VSpace(.appSpacingV8)
             }
             VSpace(.appSpacingV20)
@@ -46,40 +56,19 @@ struct EditProfileView: View {
                     icon: "",
                     title: "Delete Account",
                     tint: .appDanger,
-                    showTrailingIcon: false,
+                    showTrailingIcon: false
                 ) { }
             }
             Spacer()
-            
-            Button("Buka Modal") {
-                showSheet = true
-            }
-            .sheet(isPresented: $showSheet) {
-                NavigationStack {
-                    VStack {
-                        Text("Ini isi modal")
-                    }
-                    .navigationTitle("Phone Number")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button("Cancel") {
-                                showSheet = false
-                            }
-                        }
-                        .sharedBackgroundVisibility(.hidden)
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button("Save") {
-                                showSheet = true
-                            }
-                            .foregroundStyle(Color.appPrimary)
-                            // .buttonStyle(.plain)
-                        }
-                        // kalau pakai .plain gabisa text doang, karena di dalam ToolbarItem, jdi harus pakai 👇 dawg
-                        .sharedBackgroundVisibility(.hidden)
-                    }
-                }
-                .presentationDetents([.height(750)])
+        }
+        .sheet(item: $viewModel.activeSheet) { sheet in
+            switch sheet {
+            case .name:
+                EditNameView(name: viewModel.profile.name, onSaved: viewModel.didUpdate)
+            case .email:
+                EditEmailView(email: viewModel.profile.email, onSaved: viewModel.didUpdate)
+            case .phone:
+                EditPhoneView(phoneNumber: viewModel.profile.phoneNumber, onSaved: viewModel.didUpdate)
             }
         }
         .padding(.horizontal)
@@ -110,7 +99,13 @@ struct EditProfileView: View {
 
 #Preview {
     NavigationStack {
-        EditProfileView()
+        EditProfileView(
+            profile: UserProfileModel(
+                name: "Revan Arturito",
+                email: "revan@mail.com",
+                phoneNumber: "08123456789"
+            )
+        )
     }
 }
 

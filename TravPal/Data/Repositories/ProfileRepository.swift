@@ -8,9 +8,9 @@
 import Foundation
 
 final class ProfileRepository: ProfileRepositoryProtocol {
-    private let remoteDataSource: ProfileRemoteDataSource
+    private let remoteDataSource: ProfileRemoteDataSourceProtocol
     
-    init(remoteDataSource: ProfileRemoteDataSource) {
+    init(remoteDataSource: ProfileRemoteDataSourceProtocol) {
         self.remoteDataSource = remoteDataSource
     }
     

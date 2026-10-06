@@ -8,7 +8,15 @@
 import SwiftUI
 
 struct MainProfileView: View {
+    @StateObject private var viewModel: MainProfileViewModel
+    
     @State private var goToEdit = false
+    @State private var showToast = false
+    @State private var toastMessage = ""
+    
+    init(viewModel: MainProfileViewModel = DIContainer.shared.resolve(MainProfileViewModel.self)) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         NavigationStack {
@@ -69,7 +77,12 @@ struct MainProfileView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $goToEdit) {
-                EditProfileView()
+                if let profile = viewModel.profile {
+                    EditProfileView(profile: profile)
+                }
+            }
+            .task {
+                await viewModel.load()
             }
         }
     }

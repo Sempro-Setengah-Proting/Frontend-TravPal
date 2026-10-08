@@ -8,7 +8,32 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var goToNotificationCentre = false
+    
     var body: some View {
-        Text("Nadya")
+        NavigationStack {
+            VStack {
+                Text("Nadya")
+            }
+            .padding(.horizontal)
+            .background(LinearGradient.appBackground.ignoresSafeArea())
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        goToNotificationCentre = true
+                    } label: {
+                        Image(systemName: "bell")
+                            .foregroundStyle(Color.appPrimary)
+                    }
+                }
+            }
+            .navigationDestination(isPresented: $goToNotificationCentre) {
+                NotificationView()
+            }
+        }
     }
+}
+
+#Preview {
+    HomeView()
 }

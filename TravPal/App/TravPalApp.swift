@@ -37,7 +37,7 @@ struct TravPalApp: App {
                 if appState.isLoggedIn {
                     MainTabView()
                 } else {
-                    LoginView()
+                    MainTabView()
                 }
             }
             .animation(.default, value: appState.isLoggedIn)

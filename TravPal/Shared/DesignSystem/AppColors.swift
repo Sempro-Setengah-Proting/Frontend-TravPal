@@ -44,7 +44,7 @@ extension Color {
         static let neutral500 = Color(hex: "CCCCCC") // Base Gray
         static let neutral400 = Color(hex: "D9D9D9")
         static let neutral300 = Color(hex: "EEEEEE")
-        static let neutral200 = Color(hex: "F4F4F4")
+        static let neutral200 = Color(hex: "F4F4F4") // background aseli
         static let neutral100 = Color(hex: "FBFBFB")
     }
     
@@ -60,11 +60,14 @@ extension Color {
     static let appDanger   = Alert.danger
     static let appWarning  = Alert.warning
     
-    static let appBackground = Neutral.neutral100
+    static let appBackground = Neutral.neutral200
     static let appTextPrimary = Neutral.neutral950
     static let appTextSecondary = Neutral.neutral700
     static let appBorder = Neutral.neutral400
+    static let appGrey = Neutral.neutral500
     
     static let appSecondary = Secondary.secondary500
+    static let appSecondary100 = Secondary.secondary100
     static let appPrimary = Primary.primary500
+    
 }

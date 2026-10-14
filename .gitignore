@@ -3,5 +3,5 @@ xcuserdata/
 DerivedData/
 .build/
 
-Config/Secrets.xcconfig
+Config/Secret.xcconfig
 

@@ -19,7 +19,10 @@ final class AuthAssembly: Assembly {
         
         // MARK: Repository
         container.register(AuthRepositoryProtocol.self) { resolver in
-            AuthRepository(remoteDataSource: resolver.resolve(AuthRemoteDataSourceProtocol.self)!)
+            AuthRepository(
+                remoteDataSource: resolver.resolve(AuthRemoteDataSourceProtocol.self)!,
+                sessionManager: resolver.resolve(SessionManager.self)!
+            )
         }
         .inObjectScope(.container)
         
@@ -44,6 +47,13 @@ final class AuthAssembly: Assembly {
             VerifyOTPUseCase(repository: resolver.resolve(AuthRepositoryProtocol.self)!)
         }
         
+        container.register(AppState.self) { resolver in
+            MainActor.assumeIsolated {
+                AppState(sessionManager: resolver.resolve(SessionManager.self)!)
+            }
+        }
+        .inObjectScope(.container)
+
         // MARK: ViewModels
         container.register(LoginViewModel.self) { resolver in
             MainActor.assumeIsolated {

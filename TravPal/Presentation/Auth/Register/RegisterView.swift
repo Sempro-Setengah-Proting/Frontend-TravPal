@@ -9,10 +9,10 @@ import SwiftUI
 
 struct RegisterView: View {
     @StateObject private var viewModel: RegisterViewModel
+    @EnvironmentObject private var appState: AppState
     
     @State private var showToast: Bool = false
     @State private var toastMessage: String = ""
-    @State private var navigateToHome: Bool = false
     
     init(viewModel: RegisterViewModel = DIContainer.shared.resolve(RegisterViewModel.self)) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -112,11 +112,7 @@ struct RegisterView: View {
             }
             .onChange(of: viewModel.googleSession) { _, newSession in
                 guard newSession != nil else { return }
-                navigateToHome = true
-            }
-            .navigationDestination(isPresented: $navigateToHome) {
-                MainTabView()
-                    .navigationBarBackButtonHidden(true)
+                appState.didLogin()
             }
         }
         .dynamicIslandToast(

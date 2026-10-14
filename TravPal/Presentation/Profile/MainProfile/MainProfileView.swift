@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainProfileView: View {
     @StateObject private var viewModel: MainProfileViewModel
+    @EnvironmentObject private var appState: AppState
     
     @State private var goToEdit = false
     @State private var showToast = false
@@ -52,7 +53,9 @@ struct MainProfileView: View {
                         title: "Logout",
                         tint: .appDanger,
                         showChevron: false
-                    ) { }
+                    ) {
+                        appState.didLogout()
+                    }
                 }
                 Spacer()
             }

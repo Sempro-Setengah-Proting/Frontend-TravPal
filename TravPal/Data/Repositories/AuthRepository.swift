@@ -9,13 +9,16 @@ import Foundation
 
 final class AuthRepository: AuthRepositoryProtocol {
     private let remoteDataSource: AuthRemoteDataSourceProtocol
+    private let sessionManager: SessionManager
     
-    init(remoteDataSource: AuthRemoteDataSourceProtocol) {
+    init(remoteDataSource: AuthRemoteDataSourceProtocol, sessionManager: SessionManager) {
         self.remoteDataSource = remoteDataSource
+        self.sessionManager = sessionManager
     }
     
     func login(email: String, password: String, deviceId: String) async throws -> AuthSessionModel {
         try await mapped {
+            let issuedAt = Date()
             let dto = try await remoteDataSource.login(
                 LoginRequestDTO(
                     email: email,
@@ -23,7 +26,9 @@ final class AuthRepository: AuthRepositoryProtocol {
                     device_id: deviceId,
                 )
             )
-            return dto.toDomain()
+            let value = dto.toDomain()
+            try await sessionManager.save(value, deviceID: deviceId, issuedAt: issuedAt)
+            return value
         }
     }
     
@@ -65,13 +70,16 @@ final class AuthRepository: AuthRepositoryProtocol {
     
     func loginWithGoogle(idToken: String, deviceID: String) async throws -> AuthSessionModel {
         try await mapped {
+            let issuedAt = Date()
             let dto = try await remoteDataSource.loginWithGoogle(
                 GoogleLoginRequestDTO(
                     id_token: idToken,
                     device_id: deviceID
                 )
             )
-            return dto.toDomain()
+            let value = dto.toDomain()
+            try await sessionManager.save(value, deviceID: deviceID, issuedAt: issuedAt)
+            return value
         }
     }
     

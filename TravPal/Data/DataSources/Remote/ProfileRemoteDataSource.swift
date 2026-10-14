@@ -23,19 +23,19 @@ final class ProfileRemoteDataSource: ProfileRemoteDataSourceProtocol {
     }
 
     func getProfile() async throws -> ProfileDTO {
-        try await client.perform(path: "users/me", method: .get, decode: ProfileDTO.self)
+        try await client.perform(path: "users/me", method: .get, decode: ProfileDTO.self, requiresAuth: true)
     }
 
     func updateName(_ request: UpdateNameRequestDTO) async throws -> ProfileDTO {
-        try await client.perform(path: "users/me", method: .patch, body: request, decode: ProfileDTO.self)
+        try await client.perform(path: "users/me", method: .patch, body: request, decode: ProfileDTO.self, requiresAuth: true)
     }
     
     func updateEmail(_ request: UpdateEmailRequestDTO) async throws -> ProfileDTO {
-        try await client.perform(path: "users/me", method: .patch, body: request, decode: ProfileDTO.self)
+        try await client.perform(path: "users/me", method: .patch, body: request, decode: ProfileDTO.self, requiresAuth: true)
     }
     
     func updatePhone(_ request: UpdatePhoneRequestDTO) async throws -> ProfileDTO {
-        try await client.perform(path: "users/me", method: .patch, body: request, decode: ProfileDTO.self)
+        try await client.perform(path: "users/me", method: .patch, body: request, decode: ProfileDTO.self, requiresAuth: true)
     }
 }
 
